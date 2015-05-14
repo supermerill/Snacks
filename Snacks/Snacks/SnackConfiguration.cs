@@ -42,10 +42,15 @@ namespace Snacks
         private int mealsPerDay = 1;
         private double delayedReaction;
         private bool kerbalDeath;
+        private double evaSnack;
 
         public double SnacksPerMeal
         {
             get { return snacksPerMeal; }
+        }
+        public double EvaSnack
+        {
+            get { return evaSnack; }
         }
         public double LossPerDay
         {
@@ -88,6 +93,7 @@ namespace Snacks
             mealsPerDay = int.Parse(node.GetValue("mealsPerDay"));
             delayedReaction = double.Parse(node.GetValue("delayedReaction"));
             kerbalDeath = bool.Parse(node.GetValue("kerbalDeath"));
+            evaSnack = double.Parse(node.GetValue("evaSnack"));
             Debug.Log("snacksPerMeal:" + snacksPerMeal + "mealsPerDay:" + mealsPerDay);
         
         }

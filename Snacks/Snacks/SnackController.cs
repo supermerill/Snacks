@@ -57,6 +57,7 @@ namespace Snacks
         private int soilResourceId;
         private int snackFrequency;
         private bool kerbalDeath;
+        private double evaSnack;
 
         void Awake()
         {
@@ -75,6 +76,7 @@ namespace Snacks
                 snacksPerMeal = snackConfig.SnacksPerMeal;
                 lossPerDayPerKerbal = snackConfig.LossPerDay;
                 kerbalDeath = snackConfig.KerbalDeath;
+                evaSnack = snackConfig.EvaSnack;
                 consumer = new SnackConsumer(snackConfig.SnacksPerMeal, snackConfig.LossPerDay);
             }
             catch (Exception ex)
@@ -125,7 +127,7 @@ namespace Snacks
             try
             {
                 //Debug.Log("EVA End");
-                double got = consumer.GetSnackResource(data.from, 1.0);
+                double got = consumer.GetSnackResource(data.from, evaSnack);
                 //Debug.Log("EVA Got:" + got);
                 List<PartResource> resources = new List<PartResource>();
                 data.to.GetConnectedResources(snackResourceId, ResourceFlowMode.ALL_VESSEL, resources);
@@ -143,7 +145,7 @@ namespace Snacks
             try
             {
                 //Debug.Log("EVA start");
-                double got = consumer.GetSnackResource(data.from, 1.0);
+                double got = consumer.GetSnackResource(data.from, evaSnack);
                 //Debug.Log("EVA Got:" + got);
                 if (!data.to.Resources.Contains(snackResourceId))
                 {
@@ -154,7 +156,7 @@ namespace Snacks
                 List<PartResource> resources = new List<PartResource>();
                 data.to.GetConnectedResources(snackResourceId, ResourceFlowMode.ALL_VESSEL, resources);
                 resources.First().amount = got;
-                resources.First().maxAmount = 1;
+                resources.First().maxAmount = evaSnack;
                 SnackSnapshot.Instance().SetRebuildSnapshot();
 
                 if (!data.to.Resources.Contains(soilResourceId))
