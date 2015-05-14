@@ -33,14 +33,17 @@ namespace Snacks
 {
     class SnackConsumer
     {
-        private System.Random random = new System.Random();
-        private PartResourceDefinition snacksResource = PartResourceLibrary.Instance.GetDefinition("Snacks");
+		private System.Random random = new System.Random();
+		public PartResourceDefinition snacksResource = PartResourceLibrary.Instance.GetDefinition("Snacks");
+		public PartResourceDefinition electricChargeResource = PartResourceLibrary.Instance.GetDefinition("ElectricCharge");
         private double snacksPer;
+		private double elecChargePer;
         private double lossPerDayPerKerbal;
 
-        public SnackConsumer(double snacksPer, double loss)
-        {
-            this.snacksPer = snacksPer;
+		public SnackConsumer(double snacksPer, double elecChargePer, double loss)
+		{
+			this.snacksPer = snacksPer;
+			this.elecChargePer = elecChargePer;
             lossPerDayPerKerbal = loss;
         }
 
@@ -51,10 +54,10 @@ namespace Snacks
             return false;
         }
 
-        public double GetSnackResource(Part p, double demand)
+		public double GetResource(Part p, PartResourceDefinition resource, double demand)
         {
             List<PartResource> resources = new List<PartResource>();
-            p.GetConnectedResources(snacksResource.id, ResourceFlowMode.ALL_VESSEL, resources);
+			p.GetConnectedResources(resource.id, ResourceFlowMode.ALL_VESSEL, resources);
 
             double supplied = 0;
             foreach (PartResource res in resources)
@@ -137,8 +140,10 @@ namespace Snacks
             //Debug.Log("SnackDemand(" + pv.vesselName +"): e: " + extra + " r:" + demand);
             if ((demand + extra) <= 0)
                 return 0;
-            double fed = GetSnackResource(pv.protoPartSnapshots, demand + extra);
-            if (fed == 0)//unable to feed, no skipping or extra counted
+			double fed = GetSnackResource(pv.protoPartSnapshots, demand + extra);
+			//consume electric charge
+			double grill = GetResource(v.rootPart, electricChargeResource, elecChargePer);
+			if (fed == 0 || elecChargePer == 0)//unable to feed, no skipping or extra counted
                 return pv.GetVesselCrew().Count * snacksPer;
             return demand + extra - fed;
         }
@@ -155,9 +160,11 @@ namespace Snacks
             //Debug.Log("SnackDemand(" + v.vesselName + "): e: " + extra + " r:" + demand);
             if ((demand + extra) <= 0)
                 return 0;
-            double fed = GetSnackResource(v.rootPart, demand + extra);
+            double fed = GetResource(v.rootPart,snacksResource , demand + extra);
+			//consume electric charge
+			double grill = GetResource(v.rootPart, electricChargeResource, elecChargePer);
             //Debug.Log("fed" + fed + v.vesselName);
-            if (fed == 0)//unable to feed, no skipping or extra counted
+            if (fed == 0 || elecChargePer == 0)//unable to feed, no skipping or extra counted
                 return v.GetCrewCount() * snacksPer;
             return demand + extra - fed;
         }

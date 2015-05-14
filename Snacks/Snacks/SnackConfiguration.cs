@@ -34,8 +34,9 @@ namespace Snacks
     class SnackConfiguration
     {
 
-        private ConfigNode node;
-        private double snacksPerMeal;
+		private ConfigNode node;
+		private double snacksPerMeal;
+		private double electricChargePerMeal;
         private double lossPerDayPerKerbal;
         private int snackResourceId;
         private int soilResourceId;
@@ -44,10 +45,14 @@ namespace Snacks
         private bool kerbalDeath;
         private double evaSnack;
 
-        public double SnacksPerMeal
-        {
-            get { return snacksPerMeal; }
-        }
+		public double SnacksPerMeal
+		{
+			get { return snacksPerMeal; }
+		}
+		public double ElectricChargePerMeal
+		{
+			get { return electricChargePerMeal; }
+		}
         public double EvaSnack
         {
             get { return evaSnack; }
@@ -89,6 +94,7 @@ namespace Snacks
             Debug.Log("loading file:" + file);
             node = ConfigNode.Load(file).GetNode("SNACKS");
             snacksPerMeal = double.Parse(node.GetValue("snacksPerMeal"));
+			electricChargePerMeal = double.Parse(node.GetValue("electricChargePerMeal"));
             lossPerDayPerKerbal = double.Parse(node.GetValue("repLossPercent"));
             mealsPerDay = int.Parse(node.GetValue("mealsPerDay"));
             delayedReaction = double.Parse(node.GetValue("delayedReaction"));

@@ -52,6 +52,7 @@ namespace Snacks
 
         private SnackConsumer consumer;
         private double snacksPerMeal;
+		private double electricChargePerMeal;
         private double lossPerDayPerKerbal;
         private int snackResourceId;
         private int soilResourceId;
@@ -77,7 +78,7 @@ namespace Snacks
                 lossPerDayPerKerbal = snackConfig.LossPerDay;
                 kerbalDeath = snackConfig.KerbalDeath;
                 evaSnack = snackConfig.EvaSnack;
-                consumer = new SnackConsumer(snackConfig.SnacksPerMeal, snackConfig.LossPerDay);
+				consumer = new SnackConsumer(snackConfig.SnacksPerMeal, snackConfig.ElectricChargePerMeal, snackConfig.LossPerDay);
             }
             catch (Exception ex)
             {
@@ -127,7 +128,7 @@ namespace Snacks
             try
             {
                 //Debug.Log("EVA End");
-                double got = consumer.GetSnackResource(data.from, evaSnack);
+				double got = consumer.GetResource(data.from, consumer.snacksResource, evaSnack);
                 //Debug.Log("EVA Got:" + got);
                 List<PartResource> resources = new List<PartResource>();
                 data.to.GetConnectedResources(snackResourceId, ResourceFlowMode.ALL_VESSEL, resources);
@@ -145,7 +146,7 @@ namespace Snacks
             try
             {
                 //Debug.Log("EVA start");
-                double got = consumer.GetSnackResource(data.from, evaSnack);
+                double got = consumer.GetResource(data.from, consumer.snacksResource, evaSnack);
                 //Debug.Log("EVA Got:" + got);
                 if (!data.to.Resources.Contains(snackResourceId))
                 {
