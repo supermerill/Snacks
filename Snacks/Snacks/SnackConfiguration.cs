@@ -35,72 +35,66 @@ namespace Snacks
     {
 
 		private ConfigNode node;
-		private double snacksPerMeal;
-		private double electricChargePerMeal;
-        private double lossPerDayPerKerbal;
-        private int snackResourceId;
-        private int soilResourceId;
-        private int mealsPerDay = 1;
-        private double delayedReaction;
-        private bool kerbalDeath;
-        private double evaSnack;
-
-		public double SnacksPerMeal
-		{
-			get { return snacksPerMeal; }
-		}
-		public double ElectricChargePerMeal
-		{
-			get { return electricChargePerMeal; }
-		}
-        public double EvaSnack
-        {
-            get { return evaSnack; }
-        }
-        public double LossPerDay
-        {
-            get { return lossPerDayPerKerbal; }
-        }
-        public int SnackResourceId
-        {
-            get { return snackResourceId; }
-        }
-        public int SoilResourceId
-        {
-            get { return soilResourceId; }
-        }
-        public int MealsPerDay
-        {
-            get { return mealsPerDay; }
-        }
-        public double DelayedReaction
-        {
-            get { return delayedReaction; }
-        }
-        public bool KerbalDeath
-        {
-            get { return kerbalDeath; }
-        }
-
+		public double SnacksPerMeal { get; private set; }
+		public int NumberMealDiet { get; private set; }
+		public double ElectricChargePerSnack { get; private set; }
+		public double LossPerDayPerKerbal { get; private set; }
+		public int SnackResourceId { get; private set; }
+		public int MealsPerDay { get; private set; }
+		public double DelayedReaction { get; private set; }
+		public bool KerbalDeath { get; private set; }
+		public double EvaSnack { get; private set; }
+		public int NumberMealDietOnEva { get; private set; }
+		public string SnacksResourceName { get; private set; }
+		public double StupididyForgotChance { get; private set; }
+		public double CouragousDoubleChance { get; private set; }
+		public double BadassDietChance { get; private set; }
+		public int BonusSnacksPerMeal { get; private set; }
 
 
         private SnackConfiguration()
-        {
-            PartResourceDefinition snacksResource = PartResourceLibrary.Instance.GetDefinition("Snacks");
-            snackResourceId = snacksResource.id;
+		{
+			string file = IOUtils.GetFilePathFor(this.GetType(), "snacks.cfg");
+			Debug.Log("loading file:" + file);
+			node = ConfigNode.Load(file).GetNode("SNACKS");
+
+			Debug.Log("[SNACK]conf init");
+			SnacksResourceName = node.GetValue("snacksResourceName");
+			Debug.Log("[SNACK]conf snackResourceName=" + SnacksResourceName);
+			PartResourceDefinition snacksResource = PartResourceLibrary.Instance.GetDefinition(SnacksResourceName);
+			Debug.Log("[SNACK]conf snacksResource=" + snacksResource);
+			SnackResourceId = snacksResource.id;
+			Debug.Log("[SNACK]conf snackResourceId=" + SnackResourceId);
             //PartResourceDefinition soilResource = PartResourceLibrary.Instance.GetDefinition("Soil");
             //soilResourceId = soilResource.id;
-            string file = IOUtils.GetFilePathFor(this.GetType(), "snacks.cfg");
-            Debug.Log("loading file:" + file);
-            node = ConfigNode.Load(file).GetNode("SNACKS");
-            snacksPerMeal = double.Parse(node.GetValue("snacksPerMeal"));
-			electricChargePerMeal = double.Parse(node.GetValue("electricChargePerMeal"));
-            lossPerDayPerKerbal = double.Parse(node.GetValue("repLossPercent"));
-            mealsPerDay = int.Parse(node.GetValue("mealsPerDay"));
-            delayedReaction = double.Parse(node.GetValue("delayedReaction"));
-            kerbalDeath = bool.Parse(node.GetValue("kerbalDeath"));
-            evaSnack = double.Parse(node.GetValue("evaSnack"));
-            Debug.Log("snacksPerMeal:" + snacksPerMeal + "mealsPerDay:" + mealsPerDay);
+			SnacksPerMeal = double.Parse(node.GetValue("snacksPerMeal"));
+			Debug.Log("[SNACK]conf snacksPerMeal=" + SnacksPerMeal);
+			ElectricChargePerSnack = double.Parse(node.GetValue("electricChargePerSnack"));
+			Debug.Log("[SNACK]conf electricChargePerMeal=" + ElectricChargePerSnack);
+			LossPerDayPerKerbal = double.Parse(node.GetValue("repLossPercent"));
+			Debug.Log("[SNACK]conf lossPerDayPerKerbal=" + LossPerDayPerKerbal);
+			MealsPerDay = int.Parse(node.GetValue("mealsPerDay"));
+			Debug.Log("[SNACK]conf mealsPerDay=" + MealsPerDay);
+			DelayedReaction = double.Parse(node.GetValue("delayedReaction"));
+			Debug.Log("[SNACK]conf delayedReaction=" + DelayedReaction);
+			KerbalDeath = bool.Parse(node.GetValue("kerbalDeath"));
+			Debug.Log("[SNACK]conf kerbalDeath=" + KerbalDeath);
+			EvaSnack = double.Parse(node.GetValue("evaSnack"));
+			Debug.Log("[SNACK]conf evaSnack=" + EvaSnack);
+			StupididyForgotChance = double.Parse(node.GetValue("stupididyForgotChance"));
+			Debug.Log("[SNACK]conf StupididyForgotChance=" + StupididyForgotChance);
+			CouragousDoubleChance = double.Parse(node.GetValue("couragousDoubleChance"));
+			Debug.Log("[SNACK]conf CouragousDoubleChance=" + CouragousDoubleChance);
+			BadassDietChance = double.Parse(node.GetValue("badassDietChance"));
+			Debug.Log("[SNACK]conf BadassDietChance=" + BadassDietChance);
+			NumberMealDiet = int.Parse(node.GetValue("numberMealDiet"));
+			Debug.Log("[SNACK]conf BadassDietChance=" + BadassDietChance);
+			NumberMealDietOnEva = int.Parse(node.GetValue("numberMealDietOnEva"));
+			Debug.Log("[SNACK]conf NumberMealDietOnEva=" + NumberMealDietOnEva);
+			BonusSnacksPerMeal = int.Parse(node.GetValue("bonusSnacksPerMeal"));
+			Debug.Log("[SNACK]conf BonusSnacksPerMeal=" + BonusSnacksPerMeal);
+			
+			
         
         }
 

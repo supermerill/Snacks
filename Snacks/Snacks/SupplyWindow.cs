@@ -32,102 +32,102 @@ using UnityEngine;
 
 namespace Snacks
 {
-    [KSPAddon(KSPAddon.Startup.Flight | KSPAddon.Startup.EveryScene, false)]
-    class SupplyWindow : KSPPluginFramework.MonoBehaviourWindow
-    {
+	[KSPAddon(KSPAddon.Startup.Flight | KSPAddon.Startup.EveryScene, false)]
+	class SupplyWindow : KSPPluginFramework.MonoBehaviourWindow
+	{
 
-        private Texture2D texture;
-        private static ApplicationLauncherButton button;
-        private Vector2 scrollPos = new Vector2();
-        private GUIStyle redStyle;
-        private GUIStyle regStyle;
-        private GUIStyle yelStyle;
-        private GUIStyle hedStyle;
- 
-        internal override void Awake()
-        {
-            WindowCaption = "Snack Supply";
-            WindowRect = new Rect(0, 0, 300, 300);
-            Visible = false;
-            string textureName = "Snacks/Textures/snacks";
-            texture = GameDatabase.Instance.GetTexture(textureName,false);
-            GameEvents.onGUIApplicationLauncherReady.Add(SetupGUI);
-        }
+		private Texture2D texture;
+		private static ApplicationLauncherButton button;
+		private Vector2 scrollPos = new Vector2();
+		private GUIStyle redStyle;
+		private GUIStyle regStyle;
+		private GUIStyle yelStyle;
+		private GUIStyle hedStyle;
 
-        private void SetupGUI()
-        {
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.SPACECENTER)
-            {
-                if (button == null)
-                    button = ApplicationLauncher.Instance.AddModApplication(ShowGUI, HideGUI, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, texture);
-            }
-            else if (button != null)
-                ApplicationLauncher.Instance.RemoveModApplication(button);
-        }
+		internal override void Awake()
+		{
+			WindowCaption = "Snack Supply";
+			WindowRect = new Rect(0, 0, 300, 300);
+			Visible = false;
+			string textureName = "Snacks/Textures/snacks";
+			texture = GameDatabase.Instance.GetTexture(textureName, false);
+			GameEvents.onGUIApplicationLauncherReady.Add(SetupGUI);
+		}
+
+		private void SetupGUI()
+		{
+			if (HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.SPACECENTER)
+			{
+				if (button == null)
+					button = ApplicationLauncher.Instance.AddModApplication(ShowGUI, HideGUI, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, texture);
+			}
+			else if (button != null)
+				ApplicationLauncher.Instance.RemoveModApplication(button);
+		}
 
 
-        private void ShowGUI()
-        {
-            Visible = true;
-        }
+		private void ShowGUI()
+		{
+			Visible = true;
+		}
 
-        private void HideGUI()
-        {
-            Visible = false;
-        }
+		private void HideGUI()
+		{
+			Visible = false;
+		}
 
-        private void SetupStyles()
-        {
-           
-            hedStyle = new GUIStyle(GUI.skin.label);
-            //hedStyle.fontSize = hedStyle.fontSize + 2;
-            regStyle = new GUIStyle(GUI.skin.label);
-            regStyle.margin = new RectOffset(25, 0, 0, 0);
-            redStyle = new GUIStyle(regStyle);
-            redStyle.normal.textColor = Color.red;
-            yelStyle = new GUIStyle(regStyle);
-            yelStyle.normal.textColor = Color.yellow;
-        }
+		private void SetupStyles()
+		{
 
-        internal override void DrawWindow(int id)
-        {
-            if (hedStyle == null)
-                SetupStyles();
-            DragEnabled = true;
-            TooltipsEnabled = true;
-            scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Height(300), GUILayout.Width(300));
+			hedStyle = new GUIStyle(GUI.skin.label);
+			//hedStyle.fontSize = hedStyle.fontSize + 2;
+			regStyle = new GUIStyle(GUI.skin.label);
+			regStyle.margin = new RectOffset(25, 0, 0, 0);
+			redStyle = new GUIStyle(regStyle);
+			redStyle.normal.textColor = Color.red;
+			yelStyle = new GUIStyle(regStyle);
+			yelStyle.normal.textColor = Color.yellow;
+		}
 
-            Dictionary<int, List<ShipSupply>> snapshot = SnackSnapshot.Instance().Vessels();
-            var keys = snapshot.Keys.ToList();
-            keys.Sort();
-            foreach (int planet in keys)
-            {
-                
-                List<ShipSupply> supplies;
-                snapshot.TryGetValue(planet,out supplies);
-                //supplies.Sort();
-                GUILayout.Label(supplies.First().BodyName + ":", hedStyle);
-                foreach (ShipSupply supply in supplies)
-                {
-                    if (supply.Percent > 50)
-                        GUILayout.Label(new GUIContent(supply.VesselName + ": " + supply.SnackAmount + "/" + supply.SnackMaxAmount, "Crew: " + supply.CrewCount  + "  Duration*: " + supply.DayEstimate + " days"), regStyle);
-                    else if (supply.Percent > 25)
-                        GUILayout.Label(new GUIContent(supply.VesselName + ": " + supply.SnackAmount + "/" + supply.SnackMaxAmount, "Crew: " + supply.CrewCount + "  Duration*: " + supply.DayEstimate + " days"), yelStyle);
-                    else
-                        GUILayout.Label(new GUIContent(supply.VesselName + ": " + supply.SnackAmount + "/" + supply.SnackMaxAmount, "Crew: " + supply.CrewCount + "  Duration*: " + supply.DayEstimate + " days"), redStyle);
-                }
-            }
-           
-            GUILayout.EndScrollView();
+		internal override void DrawWindow(int id)
+		{
+			if (hedStyle == null)
+				SetupStyles();
+			DragEnabled = true;
+			TooltipsEnabled = true;
+			scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Height(300), GUILayout.Width(300));
 
-        }
-        private void onDestroy()
-        {
-            Debug.Log("SupplyWindow destroyed");
-            if (button != null)
-                ApplicationLauncher.Instance.RemoveModApplication(button);
-        }
-    }
+			Dictionary<int, List<ShipSupply>> snapshot = SnackSnapshot.Instance().Vessels();
+			var keys = snapshot.Keys.ToList();
+			keys.Sort();
+			foreach (int planet in keys)
+			{
+
+				List<ShipSupply> supplies;
+				snapshot.TryGetValue(planet, out supplies);
+				//supplies.Sort();
+				GUILayout.Label(supplies.First().BodyName + ":", hedStyle);
+				foreach (ShipSupply supply in supplies)
+				{
+					if (supply.Percent > 50)
+						GUILayout.Label(new GUIContent(supply.VesselName + ": " + supply.SnackAmount + "/" + supply.SnackMaxAmount, "Crew: " + supply.CrewCount + "  Duration*: " + supply.DayEstimate + " days"), regStyle);
+					else if (supply.Percent > 25)
+						GUILayout.Label(new GUIContent(supply.VesselName + ": " + supply.SnackAmount + "/" + supply.SnackMaxAmount, "Crew: " + supply.CrewCount + "  Duration*: " + supply.DayEstimate + " days"), yelStyle);
+					else
+						GUILayout.Label(new GUIContent(supply.VesselName + ": " + supply.SnackAmount + "/" + supply.SnackMaxAmount, "Crew: " + supply.CrewCount + "  Duration*: " + supply.DayEstimate + " days"), redStyle);
+				}
+			}
+
+			GUILayout.EndScrollView();
+
+		}
+		private void onDestroy()
+		{
+			Debug.Log("SupplyWindow destroyed");
+			if (button != null)
+				ApplicationLauncher.Instance.RemoveModApplication(button);
+		}
+	}
 
 
 }
