@@ -1,3 +1,12 @@
+Modified version by Merill
+Support of
+ - background processing
+ - ElecticCharge consumption
+ - Kerbal death
+ - allow a small diet when no snack remains.
+ - more config options
+
+Original readme & mod by tgruetzm :
 Snacks:
 ----------------------------
 Snacks is a Kerbal Space Program mod that adds a simple life support system based on the resource snacks.  Go ahead stuff the cupola snack modules full, just be careful of Jeb he sometimes doesn't share.
